@@ -4,7 +4,9 @@ const cors = require('cors');
 const cloudinaryConfig = require('./cloudinary/config');
 const connectDb = require('./database/config');
 require('dotenv').config();
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000"
+}));
 app.use(express.json());
 connectDb();
 cloudinaryConfig();

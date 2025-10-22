@@ -1,6 +1,6 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const User = require("../database/models/userModel");
-
+const jwt = require("jsonwebtoken");
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -43,9 +43,7 @@ const registerUser = async (req, res) => {
     }
 };
 
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../database/models/userModel");
+
 
 // Secret key (you should store this in .env)
 const JWT_SECRET = process.env.JWT_SECRET

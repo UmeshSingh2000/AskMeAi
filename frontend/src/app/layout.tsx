@@ -4,7 +4,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 import { AppSidebar } from "@/components/app-sidebar"
-import { Button } from "@/components/ui/button"
+import LoginForm from "@/components/LoginForm"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,15 +41,13 @@ export default function RootLayout({
             <div className="flex flex-col flex-1 min-w-0">
               <header className="p-2 border-b flex items-center justify-between">
                 <SidebarTrigger className="cursor-pointer" />
-                <Button className="cursor-pointer">
-                  Login
-                </Button>
+                <LoginForm />
               </header>
 
               <main className="flex-1 overflow-auto bg-background">
                 {children}
               </main>
-              
+
             </div>
           </div>
         </SidebarProvider>
@@ -57,3 +56,9 @@ export default function RootLayout({
     </html>
   )
 }
+
+
+
+
+
+
