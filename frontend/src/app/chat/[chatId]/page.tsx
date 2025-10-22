@@ -27,7 +27,7 @@ export default function Page() {
         <div className="h-full w-full overflow-hidden">
             <ResizablePanelGroup direction="horizontal" className="h-full border">
                 {/* LEFT SIDE: PDF Viewer */}
-                <ResizablePanel defaultSize={50} minSize={30} className="bg-gray-100 flex items-center justify-center p-2">
+                <ResizablePanel defaultSize={40} minSize={30} className="bg-gray-100 flex items-center justify-center p-2">
                     <iframe
                         src="/sample.pdf"
                         className="w-full h-full rounded-lg shadow-md border"
@@ -39,7 +39,7 @@ export default function Page() {
                 <ResizableHandle withHandle />
 
                 {/* RIGHT SIDE: Chatbox */}
-                <ResizablePanel defaultSize={50} minSize={30} className="flex flex-col bg-white">
+                <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col bg-white">
                     <Card className="flex flex-col h-full rounded-none border-none shadow-none">
                         {/* <CardHeader>
                             <CardTitle className="text-xl font-semibold">Chat with Document</CardTitle>

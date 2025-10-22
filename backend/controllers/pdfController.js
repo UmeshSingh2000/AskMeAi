@@ -1,14 +1,21 @@
 //upload to pinecone vector db
 const fs = require("fs/promises");
 const { vectorizePDF } = require("../services/vectorize");
+const uploadToCloud = require("../cloudinary/uploadToCloudinary");
 
 const uploadPDF = async (req, res) => {
     let pdfPath;
     try {
         pdfPath = req.file.path;
-        const response = await vectorizePDF(pdfPath)
+
+        //upload to cloudinary
+        const uploadResponse = await uploadToCloud(pdfPath);
+        console.log('PDF uploaded to Cloudinary:', uploadResponse.secure_url);
+
+
+        const response = await vectorizePDF(pdfPath);
         if (response.status === 201) {
-            res.status(200).json({ message: response.message });
+            res.status(200).json({ message: response.message,uploadResponse });
         }
     } catch (error) {
         console.error('Error uploading PDF:', error);
