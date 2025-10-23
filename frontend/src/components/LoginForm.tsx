@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from "sonner"
 
 const LoginForm = () => {
+    const [isLogedIn,setIslogedIn] = useState(localStorage.getItem("token") ? true : false);
     const [isRegister, setIsRegister] = useState(false) // toggle for register
     const [userData, setUserData] = useState({
         name: "",
@@ -30,7 +31,6 @@ const LoginForm = () => {
     }
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
         try {
             if (!userData.email || !userData.password || (isRegister && !userData.name)) {
                 alert("Please fill all the fields")
@@ -47,9 +47,13 @@ const LoginForm = () => {
                     })
                     if (loginResponse.status === 200) {
                         toast("Logged in successfully after registration!")
+                        localStorage.setItem("token", loginResponse.data.token)
+                        setIslogedIn(true);
+                        return
                     }
                 }
-
+                localStorage.setItem("token", response.data.token)
+                setIslogedIn(true);
             }
 
         } catch (error) {
@@ -63,7 +67,7 @@ const LoginForm = () => {
         <Dialog>
             <form>
                 <DialogTrigger asChild>
-                    <Button className="cursor-pointer" variant="outline">Login</Button>
+                    <Button className="cursor-pointer" variant="outline">{isLogedIn ? "Logout" : "Login"}</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

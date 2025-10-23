@@ -1,3 +1,4 @@
+'use client'
 import {
     Sidebar,
     SidebarContent,
@@ -10,7 +11,10 @@ import {
     SidebarMenuButton,
     SidebarMenu,
 } from "@/components/ui/sidebar"
+import axios from "axios"
 import { BookOpen, ChevronDown, Search, SquarePen } from "lucide-react"
+import { useEffect, useState } from "react"
+
 const items = [
     {
         title: "New Chat",
@@ -25,6 +29,25 @@ const items = [
 ]
 
 export function AppSidebar() {
+    const [chats, setChats] = useState<any[]>([])
+
+    const getMyChats = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/getChats`, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+            setChats(response.data.chats);  // Just store the chats from the response
+        } catch (error) {
+            console.error('Error fetching chats:', error);
+        }
+    }
+
+    useEffect(() => {
+        getMyChats();
+    }, [])
+
     return (
         <Sidebar>
             <SidebarHeader className="flex items-center gap-2 text-2xl font-bold">
@@ -62,13 +85,30 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <SidebarGroup >
-                    <SidebarGroupLabel className=""><BookOpen />Chats<ChevronDown /></SidebarGroupLabel>
+
+                <SidebarGroup>
+                    <SidebarGroupLabel className="flex items-center gap-2">
+                        <BookOpen />
+                        Chats
+                        <ChevronDown />
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {chats.map((chat, index) => (
+                                <SidebarMenuItem key={index}>
+                                    <SidebarMenuButton asChild>
+                                        <a href={`#chat-${index}`}>
+                                            <span>{chat.name || `Chat ${index + 1}`}</span> {/* Render chat name or a fallback */}
+                                        </a>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+
             <SidebarFooter />
         </Sidebar>
     )
 }
-
-

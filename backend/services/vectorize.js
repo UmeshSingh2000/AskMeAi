@@ -17,7 +17,6 @@ const vectorizePDF = async (pdf) => {
         });
         const chunkedDocs = await textSplitter.splitDocuments(rawDocs);
         const namespace = `pdf-${Date.now()}`
-        console.log(namespace)
         const chunkedDocsWithMetadata = chunkedDocs.map(doc => ({
             ...doc,
             metadata: {
@@ -44,7 +43,7 @@ const vectorizePDF = async (pdf) => {
         console.log("✅ Successfully vectorized and stored PDF!");
         return {
             status: 201,
-
+            namespace,
             message: 'PDF vectorized and stored successfully!'
         }
     } catch (error) {

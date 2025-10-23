@@ -3,12 +3,21 @@
 import React, { useState, DragEvent, ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Upload, FileText, X } from "lucide-react"
+import axios from "axios"
+import { toast } from "sonner"
+import { Spinner } from "@/components/ui/spinner"
+import { useRouter } from "next/navigation"
+
+
+
+
 
 export default function PdfUploader() {
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
-
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
   // handle file select
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -43,10 +52,32 @@ export default function PdfUploader() {
     setPreviewUrl(null)
   }
 
-  const handleUpload = () => {
-    if (!file) return alert("No file selected!")
-    // 🔥 You can call your upload API here
-    alert(`Uploading: ${file.name}`)
+  const handleUpload = async () => {
+    try {
+      setLoading(true)
+      if (!file) return alert("No file selected!")
+      // 🔥 You can call your upload API here
+      const formData = new FormData();
+      formData.append('pdf', file)
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/uploadpdf`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        }
+      })
+      if (response.status === 200) {
+        toast("Upload successful!")
+        setFile(null)
+        setPreviewUrl(null)
+        router.push(`/chat/${response.data.chatId}`)
+      }
+    } catch (error) {
+      console.error("Upload failed:", error)
+      alert("Upload failed. Please try again.")
+    }
+    finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -97,7 +128,7 @@ export default function PdfUploader() {
           </p>
 
           <Button onClick={handleUpload} className="bg-purple-600 hover:bg-purple-700 text-white">
-            Upload PDF
+            {loading ? <Spinner /> : "Upload PDF"}
           </Button>
         </div>
       )}
