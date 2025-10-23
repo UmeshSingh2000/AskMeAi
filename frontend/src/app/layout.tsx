@@ -41,6 +41,7 @@ export default function RootLayout({
             <div className="flex flex-col flex-1 min-w-0">
               <header className="p-2 border-b flex items-center justify-between">
                 <SidebarTrigger className="cursor-pointer" />
+                <h1 className="font-bold">AskAI</h1>
                 <LoginForm />
               </header>
 
