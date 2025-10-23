@@ -121,7 +121,7 @@ export default function Page() {
 
         {/* RIGHT SIDE: Chatbox */}
         <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col bg-white">
-          <Card className="flex flex-col h-full rounded-none border-none shadow-none">
+          <Card className="flex flex-col h-full rounded-none border-none shadow-none py-0">
             {/* Chat Header */}
             <div className="px-6 py-4 border-b bg-linear-to-br from-primary/5 to-primary/10 backdrop-blur-sm">
               <div className="flex items-center gap-3">
@@ -141,17 +141,15 @@ export default function Page() {
                   {messages.map((m, i) => (
                     <div
                       key={i}
-                      className={`flex gap-3 ${
-                        m.role === "user" ? "flex-row-reverse" : "flex-row"
-                      }`}
+                      className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"
+                        }`}
                     >
                       {/* Avatar */}
                       <div
-                        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                          m.role === "user"
+                        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${m.role === "user"
                             ? "bg-primary text-white"
                             : "bg-linear-to-br from-purple-100 to-blue-100 text-primary"
-                        }`}
+                          }`}
                       >
                         {m.role === "user" ? (
                           <User className="w-4 h-4" />
@@ -162,11 +160,10 @@ export default function Page() {
 
                       {/* Message Bubble */}
                       <div
-                        className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-sm ${
-                          m.role === "user"
+                        className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-sm ${m.role === "user"
                             ? "bg-primary text-primary-foreground rounded-tr-sm"
                             : "bg-linear-to-br from-gray-50 to-gray-100 text-gray-900 rounded-tl-sm border border-gray-200"
-                        }`}
+                          }`}
                       >
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
                       </div>
@@ -199,7 +196,7 @@ export default function Page() {
                       className="pr-12 h-12 rounded-xl border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm"
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={handleSend}
                     className="h-12 px-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 gap-2"
                     disabled={!input.trim()}

@@ -1,7 +1,7 @@
 
 const { GoogleGenAI } = require("@google/genai");
 const { chatting } = require("../services/chatting");
-
+const Chat = require("../database/models/chatModel");
 const ai = new GoogleGenAI({});
 const history = [];
 const askAi = async (req, res) => {
@@ -10,7 +10,23 @@ const askAi = async (req, res) => {
         if (!question || !namespace) {
             return res.status(400).json({ message: 'Question and namespace are required.' });
         }
-        const response = await chatting(question, namespace, ai,history);
+        const chat = await Chat.findOne({ pdfId: namespace });
+        if (!chat) {
+            return res.status(404).json({ message: "Chat not found" });
+        }
+        const currentChat = {
+            user: {
+                text: question
+            }
+        }
+        const response = await chatting(question, namespace, ai, history);
+
+        // save history in db
+        currentChat.model = {
+            text: response
+        }
+        chat.chatHistory.push(currentChat);
+        await chat.save();
         return res.status(200).json({ answer: response });
 
     } catch (error) {

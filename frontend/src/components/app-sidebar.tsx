@@ -11,6 +11,17 @@ import {
     SidebarMenuButton,
     SidebarMenu,
 } from "@/components/ui/sidebar"
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogClose,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+
 import axios from "axios"
 import { BookOpen, ChevronDown, Search, SquarePen } from "lucide-react"
 import Link from "next/link"
@@ -32,6 +43,20 @@ const items = [
 export function AppSidebar() {
     const [chats, setChats] = useState<any[]>([])
     const [isLogedIn, setIslogedIn] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // ctrl/cmd + k
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault()
+                setIsSearchOpen(true)
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown)
+        return () => window.removeEventListener("keydown", handleKeyDown)
+    }, [])
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             const token = localStorage.getItem("token");
@@ -120,8 +145,29 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-
             <SidebarFooter />
+            <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                <DialogContent className="sm:max-w-lg w-full">
+                    <DialogHeader>
+                        <DialogTitle>Search Chats</DialogTitle>
+                        <DialogDescription>
+                            Start typing to find your chat quickly.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <Input
+                        placeholder="Type chat name..."
+                        autoFocus
+                        onKeyDown={(e) => {
+                            if (e.key === "Escape") setIsSearchOpen(false)
+                        }}
+                        className="mt-2 w-full"
+                    />
+
+                    <DialogClose className="absolute top-2 right-2" />
+                </DialogContent>
+            </Dialog>
+
         </Sidebar>
     )
 }
