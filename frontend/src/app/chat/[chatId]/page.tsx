@@ -19,6 +19,7 @@ type pdfData = {
   pdfUrl: string;
   pdfId: string;
   boost: boolean;
+  chatHistory: any;
 };
 
 export default function Page() {
@@ -65,7 +66,6 @@ export default function Page() {
           },
         }
       );
-
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: response.data.answer },
@@ -93,12 +93,26 @@ export default function Page() {
         }
       );
       setPdfData(response.data);
+
+      // Map backend chatHistory to frontend messages
+      const backendMessages = response.data.chatHistory?.flatMap((chat: any) => {
+        const msgs = [];
+        if (chat.user?.text) msgs.push({ role: "user", content: chat.user.text });
+        if (chat.model?.text) msgs.push({ role: "assistant", content: chat.model.text });
+        return msgs;
+      }) || [];
+
+      setMessages([
+        { role: "assistant", content: "Hi there! Ask me anything about your document." },
+        ...backendMessages,
+      ]);
     } catch (err) {
       console.error("Error fetching PDF data:", err);
     } finally {
       setLoading(false);
     }
   };
+
   const toggleBoost = async () => {
     if (boostLoading) return;
     try {
@@ -150,7 +164,7 @@ export default function Page() {
 
         {/* RIGHT SIDE: Chatbox */}
         <ResizablePanel defaultSize={60} minSize={30} className="flex flex-col bg-white">
-          <Card className="flex flex-col h-full rounded-none border-none shadow-none py-0">
+          <Card className="flex flex-col h-full rounded-none border-none shadow-none py-0 gap-0">
             {/* Chat Header */}
             <div className="px-6 py-4 border-b bg-linear-to-br from-primary/5 to-primary/10 backdrop-blur-sm">
               <div className="flex items-center justify-between">

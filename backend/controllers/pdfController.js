@@ -56,7 +56,8 @@ const getPdf = async (req,res)=>{
         res.status(200).json({
             pdfUrl:chat.pdfUrl,
             pdfId:chat.pdfId,
-            boost:chat.boost
+            boost:chat.boost,
+            chatHistory: chat.chatHistory
         })
     } catch (error) {
         console.error("Error fetching PDF data:", error);
