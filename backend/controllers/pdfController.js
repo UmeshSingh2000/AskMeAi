@@ -3,6 +3,7 @@ const fs = require("fs/promises");
 const { vectorizePDF } = require("../services/vectorize");
 const uploadToCloud = require("../cloudinary/uploadToCloudinary");
 const Chat = require("../database/models/chatModel");
+const { generateChatName } = require("../services/System");
 
 const uploadPDF = async (req, res) => {
     let pdfPath;
@@ -16,11 +17,15 @@ const uploadPDF = async (req, res) => {
         const response = await vectorizePDF(pdfPath);
         if (response.status === 201) {
             const { namespace } = response;
+            
+            // generate chat name
+            const chatName = await generateChatName(pdfPath);
             // save in db
             const newChat = new Chat({
                 userId: req.user.id,
                 pdfUrl: uploadResponse.secure_url,
-                pdfId: namespace
+                pdfId: namespace,
+                name: chatName
             });
             await newChat.save();
             res.status(200).json({ message: response.message, chatId: newChat._id });
@@ -50,7 +55,8 @@ const getPdf = async (req,res)=>{
         }
         res.status(200).json({
             pdfUrl:chat.pdfUrl,
-            pdfId:chat.pdfId
+            pdfId:chat.pdfId,
+            boost:chat.boost
         })
     } catch (error) {
         console.error("Error fetching PDF data:", error);

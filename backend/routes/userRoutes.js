@@ -17,4 +17,5 @@ router.post('/uploadpdf', isAuthenticated, upload.single('pdf'), uploadPDF)
 router.post('/ask/ai', isAuthenticated, askAi)
 router.get('/getChats',isAuthenticated,getChats)
 router.get('/getpdf/:chatId',isAuthenticated,getPdf)
+router.put('/enableBoost/:chatId',isAuthenticated,require('../controllers/chatController').toggleBoost)
 module.exports = router;

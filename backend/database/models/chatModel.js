@@ -20,6 +20,14 @@ const chatSchema = new Schema({
         type:Array,
         default:[]
     },
+    name:{
+        type: String,
+        default: "New Chat"
+    },
+    boost:{
+        type:Boolean,
+        default:false
+    }
 },
 {
     timestamps:true

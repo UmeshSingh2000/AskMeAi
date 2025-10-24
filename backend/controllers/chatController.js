@@ -10,6 +10,23 @@ const getChats = async(req,res)=>{
     }
 }
 
+const toggleBoost = async(req,res)=>{
+    try {
+        const {chatId} = req.params;
+        const chat = await Chat.findById(chatId);
+        if(!chat){
+            return res.status(404).json({message:"Chat not found"});
+        }
+        chat.boost = !chat.boost;
+        await chat.save();
+        res.status(200).json({message:"Boost toggled", boost:chat.boost});
+    } catch (error) {
+        console.error('Error toggling boost:', error);
+        res.status(500).json({ message: 'Failed to toggle boost.' });
+    }
+}
+
 module.exports={
-    getChats
+    getChats,
+    toggleBoost
 }

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 import { AppSidebar } from "@/components/app-sidebar"
 import LoginForm from "@/components/LoginForm"
+import Link from "next/link"
 
 
 const geistSans = Geist({
@@ -41,7 +42,9 @@ export default function RootLayout({
             <div className="flex flex-col flex-1 min-w-0">
               <header className="p-2 border-b flex items-center justify-between">
                 <SidebarTrigger className="cursor-pointer" />
-                <h1 className="font-bold">AskAI</h1>
+                <Link href="/" className="text-lg">
+                  <h1 className="font-bold">AskAI</h1>
+                </Link>
                 <LoginForm />
               </header>
 

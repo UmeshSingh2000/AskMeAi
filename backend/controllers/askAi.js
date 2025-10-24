@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({});
 const history = [];
 const askAi = async (req, res) => {
     try {
-        const { question, namespace } = req.body;
+        const { question, namespace, boost=false } = req.body;
         if (!question || !namespace) {
             return res.status(400).json({ message: 'Question and namespace are required.' });
         }
@@ -19,7 +19,7 @@ const askAi = async (req, res) => {
                 text: question
             }
         }
-        const response = await chatting(question, namespace, ai, history);
+        const response = await chatting(question, namespace, ai, history,boost);
 
         // save history in db
         currentChat.model = {

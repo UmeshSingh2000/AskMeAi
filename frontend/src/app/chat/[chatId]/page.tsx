@@ -10,10 +10,15 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import { Spinner } from "@/components/ui/spinner";
 import { Send, Bot, User } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Plus } from "lucide-react";
+import { toast } from "sonner";
+
 
 type pdfData = {
   pdfUrl: string;
   pdfId: string;
+  boost: boolean;
 };
 
 export default function Page() {
@@ -26,6 +31,7 @@ export default function Page() {
   ]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [boostLoading, setBoostLoading] = useState(false);
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
@@ -51,6 +57,7 @@ export default function Page() {
         {
           question: input,
           namespace: pdfData?.pdfId,
+          boost: pdfData?.boost || false
         },
         {
           headers: {
@@ -92,6 +99,28 @@ export default function Page() {
       setLoading(false);
     }
   };
+  const toggleBoost = async () => {
+    if (boostLoading) return;
+    try {
+      setBoostLoading(true);
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/enableBoost/${chatId}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setPdfData((prev) => prev ? { ...prev, boost: response.data.boost } : null);
+      toast(`Boost ${response.data.boost ? "enabled" : "disabled"} successfully!`);
+    }
+    catch (err) {
+      console.error("Error toggling boost:", err);
+    } finally {
+      setBoostLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetchPdf();
@@ -124,65 +153,68 @@ export default function Page() {
           <Card className="flex flex-col h-full rounded-none border-none shadow-none py-0">
             {/* Chat Header */}
             <div className="px-6 py-4 border-b bg-linear-to-br from-primary/5 to-primary/10 backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-primary" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold text-lg text-gray-900">AI Assistant</h2>
+                    <p className="text-sm text-gray-500">Ask questions about your document</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="font-semibold text-lg text-gray-900">AI Assistant</h2>
-                  <p className="text-sm text-gray-500">Ask questions about your document</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Boost</span>
+                  {
+                    boostLoading ? <Spinner className="h-5 w-5 text-primary" /> :
+                      <Switch checked={pdfData?.boost} onCheckedChange={toggleBoost} />
+                  }
                 </div>
               </div>
             </div>
 
             <CardContent className="flex flex-col grow overflow-hidden p-0">
-              <ScrollArea className="grow px-6 py-4" ref={scrollRef}>
-                <div className="space-y-6">
-                  {messages.map((m, i) => (
+              {/* Scrollable chat messages */}
+              <div
+                ref={scrollRef}
+                className="flex-1 overflow-y-auto px-6 py-4 space-y-6"
+              >
+                {messages.map((m, i) => (
+                  <div
+                    key={i}
+                    className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                  >
                     <div
-                      key={i}
-                      className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"
+                      className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${m.role === "user"
+                          ? "bg-primary text-white"
+                          : "bg-linear-to-br from-purple-100 to-blue-100 text-primary"
                         }`}
                     >
-                      {/* Avatar */}
-                      <div
-                        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${m.role === "user"
-                            ? "bg-primary text-white"
-                            : "bg-linear-to-br from-purple-100 to-blue-100 text-primary"
-                          }`}
-                      >
-                        {m.role === "user" ? (
-                          <User className="w-4 h-4" />
-                        ) : (
-                          <Bot className="w-4 h-4" />
-                        )}
-                      </div>
-
-                      {/* Message Bubble */}
-                      <div
-                        className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-sm ${m.role === "user"
-                            ? "bg-primary text-primary-foreground rounded-tr-sm"
-                            : "bg-linear-to-br from-gray-50 to-gray-100 text-gray-900 rounded-tl-sm border border-gray-200"
-                          }`}
-                      >
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
-                      </div>
+                      {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                     </div>
-                  ))}
-
-                  {aiThinking && (
-                    <div className="flex gap-3">
-                      <div className="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 text-primary flex items-center justify-center">
-                        <Bot className="w-4 h-4" />
-                      </div>
-                      <div className="px-4 py-3 rounded-2xl rounded-tl-sm bg-linear-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center gap-2 shadow-sm">
-                        <Spinner className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-gray-600">AI is thinking...</span>
-                      </div>
+                    <div
+                      className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-sm ${m.role === "user"
+                          ? "bg-primary text-primary-foreground rounded-tr-sm"
+                          : "bg-linear-to-br from-gray-50 to-gray-100 text-gray-900 rounded-tl-sm border border-gray-200"
+                        }`}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
                     </div>
-                  )}
-                </div>
-              </ScrollArea>
+                  </div>
+                ))}
+
+                {aiThinking && (
+                  <div className="flex gap-3">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 text-primary flex items-center justify-center">
+                      <Bot className="w-4 h-4" />
+                    </div>
+                    <div className="px-4 py-3 rounded-2xl rounded-tl-sm bg-linear-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center gap-2 shadow-sm">
+                      <Spinner className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-gray-600">AI is thinking...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Chat Input */}
               <div className="p-4 border-t bg-linear-to-br from-gray-50/50 to-white">
@@ -207,6 +239,8 @@ export default function Page() {
                 </div>
               </div>
             </CardContent>
+
+
           </Card>
         </ResizablePanel>
       </ResizablePanelGroup>
