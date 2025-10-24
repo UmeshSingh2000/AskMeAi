@@ -186,16 +186,16 @@ export default function Page() {
                   >
                     <div
                       className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${m.role === "user"
-                          ? "bg-primary text-white"
-                          : "bg-linear-to-br from-purple-100 to-blue-100 text-primary"
+                        ? "bg-primary text-white"
+                        : "bg-linear-to-br from-purple-100 to-blue-100 text-primary"
                         }`}
                     >
                       {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                     </div>
                     <div
                       className={`px-4 py-3 rounded-2xl max-w-[75%] shadow-sm ${m.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-tr-sm"
-                          : "bg-linear-to-br from-gray-50 to-gray-100 text-gray-900 rounded-tl-sm border border-gray-200"
+                        ? "bg-primary text-primary-foreground rounded-tr-sm"
+                        : "bg-linear-to-br from-gray-50 to-gray-100 text-gray-900 rounded-tl-sm border border-gray-200"
                         }`}
                     >
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
@@ -231,7 +231,7 @@ export default function Page() {
                   <Button
                     onClick={handleSend}
                     className="h-12 px-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 gap-2"
-                    disabled={!input.trim()}
+                    disabled={!input.trim() || aiThinking}
                   >
                     <Send className="w-4 h-4" />
                     <span className="hidden sm:inline">Send</span>
