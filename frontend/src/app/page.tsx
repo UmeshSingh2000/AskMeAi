@@ -7,7 +7,6 @@ import AskAIStats from '@/components/Stats'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
 import { Button } from '@/components/ui/button'
 import React from 'react'
-
 const page = () => {
   return (
     <main className='flex flex-col gap-10 p-10 w-full h-auto bg-linear-to-r from-purple-100 to-blue-100'>

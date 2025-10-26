@@ -25,9 +25,10 @@
     "motion": "^12.23.24",
     "next": "^15.0.3",
     "next-themes": "^0.4.6",
+    "pdfjs-dist": "^3.11.174",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-pdf": "^10.2.0",
+    "react-pdf": "^7.7.3",
     "react-resizable-panels": "^3.0.6",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1"

@@ -36,7 +36,7 @@ const chatting = async (message, namespace, ai, history, boost) => {
             config: {
                 systemInstruction: `${boost ? 'Boost is enabled' : "Boost is disabled"} 
                 You are an expert in any field. According to Boost answer the question.
-                If the boost is enabled then search the internet as well for better answer if not found in context or the context is not enough for the question.
+                If the boost is enabled then search the internet as well as context for better answer and merge those two for better response.
                 If the boost is disabled then answer from the context only.
                 If the context is insufficient, when the boost is disabled say "This file does not contain the information you need. Enable 'Boost' for better results.".
                 Keep the answer concise.".

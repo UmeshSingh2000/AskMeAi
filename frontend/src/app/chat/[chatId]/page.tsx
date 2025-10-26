@@ -13,6 +13,7 @@ import { Send, Bot, User } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
 
 
 type pdfData = {
@@ -156,6 +157,7 @@ export default function Page() {
               className={`w-full h-full rounded-xl shadow-2xl border border-gray-200 ${loading ? "hidden" : "block"}`}
               onLoad={() => setLoading(false)}
             />
+
           )}
         </ResizablePanel>
 
